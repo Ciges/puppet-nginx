@@ -38,6 +38,7 @@ For the demos we are going to consider two environments: production and test. So
 mkdir -p /etc/puppet/code/environments/production/{modules,manifests}
 ```
 
+*(In Debian 10 default puppet environments dir is /etc/puppet/code/environments, verify puppet.conf configuration file in your installation)*
 
 
-### 
+### Proxy to redirect requests for https://domain.com to 10.10.10.10 and redirect requests for https://domain.com/resource2 to 20.20.20.20
