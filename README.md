@@ -21,6 +21,8 @@ rm -Rf puppet-nginx-master
 puppet module install puppet-nginx-master.tar.gz
 ```
 
+*(In Debian 10 default puppet config dir is /etc/puppet/ so this module will be installed inder /etc/puppet/code/modules/nginx/)*
+
 ### Requirements
 
 * Puppet 4.6.1 or later.  Puppet 3 was supported up until release 0.6.0.
@@ -54,6 +56,11 @@ nginx::resource::server { '_':
 }
 ```
 
-You can find this manifest in file [*examples/production/manifests/_.pp*](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/_.pp)
+You can find this manifest in file [*examples/production/manifests/_.pp*](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/_.pp), so you can copy in the production environnement at puppet master node with
+
+```bash
+    cd /etc/puppet/code/environments/production/manifests/
+    cp /etc/puppet/code/modules/nginx/examples/production/manifests/_.pp .
+```
 
 ### Proxy to redirect requests for https://domain.com to 10.10.10.10 and redirect requests for https://domain.com/resource2 to 20.20.20.20
