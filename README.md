@@ -27,8 +27,8 @@ puppet module install puppet-nginx-master.tar.gz
 
 ### Additional Documentation
 
-* [Original doc from James Fryman nginx module](http:./README_voxpopuli.md)
-* [A Quickstart Guide to the NGINX Puppet Module](http:./docs/quickstart.md)
+* [Original doc from James Fryman nginx module](https://github.com/Ciges/puppet-nginx/blob/master/README_voxpopuli.md)
+* [A Quickstart Guide to the NGINX Puppet Module](https://github.com/Ciges/puppet-nginx/blob/master/docs/quickstart.md)
 
 ## CONFIGURATION DEMOS
 
