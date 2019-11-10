@@ -10,7 +10,7 @@ This fork is for showing a demo of the following cases:
 
 ## INSTALLING OR UPGRADING
 
-The instructions shown here apply to an installation in agent-master architecture, in which a master node controls configuration.
+The instructions shown here apply to an installation in **agent-master architecture**, in which a master node controls configuration.
 
 To install this module download the [zip bundle](https://github.com/Ciges/puppet-nginx/archive/master.zip) on puppet master and run the following commands:
 
@@ -62,5 +62,11 @@ You can find this manifest in file [*examples/production/manifests/_.pp*](https:
 cd /etc/puppet/code/environments/production/manifests/
 cp /etc/puppet/code/modules/nginx/examples/production/manifests/_.pp .
 ```
+
+Once in the node machine, you could reload the config with
+
+````
+puppet agent --test
+````
 
 ### Proxy to redirect requests for https://domain.com to 10.10.10.10 and redirect requests for https://domain.com/resource2 to 20.20.20.20
