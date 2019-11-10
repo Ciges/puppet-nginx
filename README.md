@@ -59,8 +59,8 @@ nginx::resource::server { '_':
 You can find this manifest in file [*examples/production/manifests/_.pp*](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/_.pp), so you can copy in the production environnement at puppet master node with
 
 ```bash
-    cd /etc/puppet/code/environments/production/manifests/
-    cp /etc/puppet/code/modules/nginx/examples/production/manifests/_.pp .
+cd /etc/puppet/code/environments/production/manifests/
+cp /etc/puppet/code/modules/nginx/examples/production/manifests/_.pp .
 ```
 
 ### Proxy to redirect requests for https://domain.com to 10.10.10.10 and redirect requests for https://domain.com/resource2 to 20.20.20.20
