@@ -1,4 +1,8 @@
-include nginx
+class { 'nginx':
+  log_format => {
+    proxy_log => '[$time_local] $remote_addr "$request" $status - $request_time s'
+  }
+}
 
 nginx::resource::server { '_':
     ensure => present, 

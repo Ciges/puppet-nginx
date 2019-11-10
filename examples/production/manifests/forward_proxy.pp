@@ -1,8 +1,3 @@
-class { 'nginx':
-  log_format => {
-    proxy_log => '[$time_local] $remote_addr "$request" $status - $request_time s'
-  }
-}
 nginx::resource::server { 'http_proxy':
     ensure => present,
     listen_port => 8080,
