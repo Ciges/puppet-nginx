@@ -24,3 +24,20 @@ puppet module install puppet-nginx-master.tar.gz
 ### Requirements
 
 * Puppet 4.6.1 or later.  Puppet 3 was supported up until release 0.6.0.
+
+### Additional Documentation
+
+* [Original doc from James Fryman nginx module](http:./README_voxpopuli.md)
+* [A Quickstart Guide to the NGINX Puppet Module](http:./docs/quickstart.md)
+
+## CONFIGURATION DEMOS
+
+For the demos we are going to consider two environments: production and test. So first we will create the environment *'production'* on master node
+
+```
+mkdir -p /etc/puppet/code/environments/production/{modules,manifests}
+```
+
+
+
+### 
