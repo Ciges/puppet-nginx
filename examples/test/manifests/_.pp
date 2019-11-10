@@ -1,4 +1,4 @@
-include nginx
+class { 'nginx': }
 
 nginx::resource::server { '_':
     ensure => present, 
