@@ -3,7 +3,7 @@
 This **module manages NGINX configuration**. It is a fork from James Fryman <james@frymanet.com> version at Vox Pupuli (you can see original one [here](https://github.com/voxpupuli/puppet-nginx)).
 
 This fork is for showing a demo of the following cases:
-* Create a virtual host on port 80, and make it the default
+* [Create a virtual host on port 80, and make it the default](#virtual-host-on-port-80-host-by-default)
 * Create a proxy to redirect requests for https://domain.com to 10.10.10.10 and redirect requests for https://domain.com/resource2 to 20.20.20.20
 * Create a forward proxy to log HTTP requests going from the internal network to the Internet including: request protocol, remote IP and time take to serve the request
 * Implement a proxy health check
@@ -47,6 +47,7 @@ In the next sections Manifest for the different configuration will be shown
 
 ### Virtual host on port 80, host by default
 
+*_.pp*
 ```puppet
 class { 'nginx': }
 
@@ -107,3 +108,9 @@ nginx::resource::location { '/resource2/':
 ````
 
 The manifest is in file [*examples/production/manifests/reverse_proxy_domaincom.pp*](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/reverse_proxy_domaincom.pp), so you can copy it in the production environment as shown before.
+
+### Forward proxy to log HTTP requests going from the internal network to the Internet
+
+Here we will make the following:
+* Add a custom log format to the default configuration
+* Add the manifest for the new forward proxy
