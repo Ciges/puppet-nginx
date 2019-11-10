@@ -72,6 +72,8 @@ puppet agent --test
 
 ### Proxy to redirect requests for https://domain.com to 10.10.10.10 and redirect requests for https://domain.com/resource2 to 20.20.20.20
 
+All request to https://domain.com will be redirected also encrypted with SSL, using "fake" self-signed certificate *"snakeoil"* present in OpenSSL package by default.
+
 ````puppet
 include nginx
 
