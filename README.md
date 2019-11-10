@@ -34,11 +34,26 @@ puppet module install puppet-nginx-master.tar.gz
 
 For the demos we are going to consider two environments: production and test. So first we will create the environment *'production'* on master node
 
-```
+```bash
 mkdir -p /etc/puppet/code/environments/production/{modules,manifests}
 ```
 
 *(In Debian 10 default puppet environments dir is /etc/puppet/code/environments, verify puppet.conf configuration file in your installation)*
 
+In the next sections Manifest for the different configuration will be shown
+
+### Virtual host on port 80, host by default
+
+```puppet
+class { 'nginx': }
+
+nginx::resource::server { '_':
+    ensure => present, 
+    listen_port => 80,
+    listen_options => 'default_server',
+}
+```
+
+You can find this manifest in file [*examples/production/manifests/_.pp*](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/_.pp)
 
 ### Proxy to redirect requests for https://domain.com to 10.10.10.10 and redirect requests for https://domain.com/resource2 to 20.20.20.20
