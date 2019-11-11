@@ -1,12 +1,15 @@
 # NGINX module for Puppet
 
-This **module manages NGINX configuration**. It is a fork from James Fryman <james@frymanet.com> version at Vox Pupuli (you can see original one [here](https://github.com/voxpupuli/puppet-nginx)).
+This **module manages NGINX configuration**. It is a fork from James Fryman <james@frymanet.com> version at Vox Pupuli (you can see the original one [here](https://github.com/voxpupuli/puppet-nginx)).
 
 This fork is for showing a demo of the following cases:
-* Create a virtual host on port 80, and make it the default
-* Create a proxy to redirect requests for https://domain.com to 10.10.10.10 and redirect requests for https://domain.com/resource2 to 20.20.20.20
-* Create a forward proxy to log HTTP requests going from the internal network to the Internet including: request protocol, remote IP and time take to serve the request
-* Implement a proxy health check
+* A virtual host on port 80, making it the default
+* A proxy to redirect requests for https://domain.com to 10.10.10.10 and redirect requests for https://domain.com/resource2 to 20.20.20.20
+* A forward proxy to log HTTP requests going from the internal network to the Internet including request protocol, remote IP and time take to serve the request
+* A load balancer with a proxy health check
+
+
+All the manifest files used are under *[examples/production/](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/)* and *[examples/test/](https://github.com/Ciges/puppet-nginx/blob/master/examples/test/)* directories, for two proposed environnements: production and test.
 
 
 ## INSTALLING OR UPGRADING
@@ -30,7 +33,7 @@ puppet module install puppet-nginx-master.tar.gz
 
 ### Additional Documentation
 
-* [Original doc from James Fryman nginx module](https://github.com/Ciges/puppet-nginx/blob/master/README_voxpopuli.md)
+* [Original doc from James Fryman Nginx module](https://github.com/Ciges/puppet-nginx/blob/master/README_voxpopuli.md)
 * [A Quickstart Guide to the NGINX Puppet Module](https://github.com/Ciges/puppet-nginx/blob/master/docs/quickstart.md)
 
 ## CONFIGURATION DEMOS
@@ -57,7 +60,7 @@ nginx::resource::server { '_':
 }
 ```
 
-You can find this manifest in file [*examples/production/manifests/_.pp*](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/_.pp), so you can copy in the production environnement at puppet master node with
+You can find this manifest in file [*examples/production/manifests/_.pp*](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/_.pp), so you can copy in the production environment at puppet master node with
 
 ```bash
 cd /etc/puppet/code/environments/production/manifests/
@@ -72,7 +75,7 @@ puppet agent --test
 
 ### Proxy to redirect requests for https://domain.com to 10.10.10.10 and redirect requests for https://domain.com/resource2 to 20.20.20.20
 
-All request to https://domain.com will be redirected also encrypted with SSL, using "fake" self-signed certificate *"snakeoil"* present in OpenSSL package by default.
+All requests to https://domain.com will be redirected also encrypted with SSL, using "fake" self-signed certificate *"snakeoil"* present in OpenSSL package by default.
 
 ````puppet
 include nginx
@@ -152,3 +155,71 @@ google-chrome --proxy-server=debianvm.ciges.net:8080
 ````
 
 And see the proxy running viewing the log at */var/log/nginx/http_proxy.access.log* on agent node
+
+
+### Load balancer with a proxy health check
+
+In this case we are going to:
+* Add a custom log in the default configuration
+* Configure a load balancer for the URL www.ciges.net who will send request in a round-robin way to three Nginx instances, two of then in port 8080 in the local network and the third one in VPS located in Internet
+* Configure a passive health check, for not sending a new request to a server if it failed three times in the last minute
+
+
+With the new custom log format *"upstream_log"* the default configuration (file *[_.pp](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/_.pp)* will be:
+
+```puppet
+class { 'nginx':
+  log_format => {
+    proxy_log => '[$time_local] $remote_addr - "$request" $status - $request_time sec',
+    upstream_log =>  '[$time_local] $remote_addr - $server_name  to: $upstream_addr: $request - upstream_response_time $upstream_response_time msec $msec request_time $request_time sec',
+  }
+}
+
+nginx::resource::server { '_':
+    ensure => present, 
+    listen_port => 80,
+    listen_options => 'default_server',
+}
+```
+
+And the new manifest file to deploy an Nginx load balancer as told will be:
+
+```puppet
+include nginx
+
+nginx::resource::upstream { 'cigesnet_us':
+    ensure  => present,
+    members => {
+        'local_vm1' => {
+            server => '192.168.56.10',
+            port   => 8090,
+        },
+        'local_vm2' => {
+            server => '192.168.56.11',
+            port   => 8090,
+        },
+        'vps' => {
+            server => '164.132.103.253',
+            port   => 80,
+        },
+    },
+    member_defaults => {
+        max_fails => 3,
+        fail_timeout => '60s',
+    },
+    # Uncomment to make clients preserve destination server in consecutive requests
+    #ip_hash => true,
+}
+
+nginx::resource::server { 'cigesnet_lb':
+    ensure => present,
+    listen_port => 9090,
+    proxy => 'http://cigesnet_us',
+    access_log => '/var/log/nginx/cigesnet_lb.access.log',
+    format_log => upstream_log,
+} 
+```
+
+The servers on 192.168.56.10 and 192.168.56.11 are both puppet nodes on my local network, the first one in *"production"* environment and the second one in *"test"* with instances configured to listen on 8090 port. The third IP address is from a VPS on Internet hosting www.ciges.net.
+
+
