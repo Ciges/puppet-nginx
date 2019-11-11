@@ -38,15 +38,16 @@ puppet module install puppet-nginx-master.tar.gz
 
 ## CONFIGURATION DEMOS
 
-For the demos we are going to consider two environments: production and test. So first we will create the environment *'production'* on master node
+For the demos we are going to consider two environments: production and test. So first we will create both on master node
 
 ```bash
 mkdir -p /etc/puppet/code/environments/production/{modules,manifests}
+mkdir -p /etc/puppet/code/environments/test/{modules,manifests}
 ```
 
 *(In Debian 10 default puppet environments dir is /etc/puppet/code/environments, verify puppet.conf configuration file in your installation)*
 
-In the next sections Manifest for the different configuration will be shown
+In the next sections Manifests files for the different configurations will be shown
 
 ### Virtual host on port 80, host by default
 
@@ -72,6 +73,9 @@ Once in the node machine, you could reload the config with
 ````
 puppet agent --test
 ````
+
+and test it pointing the browser to an URL pointing to the IP of the node server.
+
 
 ### Proxy to redirect requests for https://domain.com to 10.10.10.10 and redirect requests for https://domain.com/resource2 to 20.20.20.20
 
@@ -111,6 +115,7 @@ nginx::resource::location { '/resource2/':
 
 The manifest is in file [*examples/production/manifests/reverse_proxy_domaincom.pp*](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/reverse_proxy_domaincom.pp), so you can copy it in the production environment as shown before.
 
+
 ### Forward proxy to log HTTP requests going from the internal network to the Internet
 
 Here we will make the following:
@@ -148,10 +153,10 @@ nginx::resource::server { 'http_proxy':
 
 In this case the manifest is available at [*examples/production/manifests/forward_proxy.pp*](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/forward_proxy.pp)
 
-To test it, we can tun the chrome navigator using the address of the agent node with the server deployed (*"debianvm.ciges.net*" in the example) as option with
+To test it, we can tun the chrome navigator using the address of the agent node with the server deployed (*"debianvm.ciges.local*" in the example) as option with
 
 ````bash
-google-chrome --proxy-server=debianvm.ciges.net:8080
+google-chrome --proxy-server=debianvm.ciges.local:8080
 ````
 
 And see the proxy running viewing the log at */var/log/nginx/http_proxy.access.log* on agent node
@@ -161,7 +166,7 @@ And see the proxy running viewing the log at */var/log/nginx/http_proxy.access.l
 
 In this case we are going to:
 * Add a custom log in the default configuration
-* Configure a load balancer for the URL www.ciges.net who will send request in a round-robin way to three Nginx instances, two of then in port 8080 in the local network and the third one in VPS located in Internet
+* Configure a load balancer for the URL www.ciges.net who will send request in a round-robin way to three Nginx instances, two of then in port 8090 in the local network and the third one in VPS located in Internet
 * Configure a passive health check, for not sending a new request to a server if it failed three times in the last minute
 
 
@@ -222,4 +227,7 @@ nginx::resource::server { 'cigesnet_lb':
 
 The servers on 192.168.56.10 and 192.168.56.11 are both puppet nodes on my local network, the first one in *"production"* environment and the second one in *"test"* with instances configured to listen on 8090 port. The third IP address is from a VPS on Internet hosting www.ciges.net.
 
+The directive *ip_hash*, commented for testing the health check, allows to send the request from the same client to the same destination server, which allows the use of sessions, needed in a real scenario.
+
+Once running we could see how the load balancer works reading the contents of the log */var/log/nginx/cigesnet_lb.access.log*.
 
