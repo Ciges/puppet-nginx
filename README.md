@@ -3,7 +3,7 @@
 This **module manages NGINX configuration**. It is a fork from James Fryman <james@frymanet.com> version at Vox Pupuli (you can see original one [here](https://github.com/voxpupuli/puppet-nginx)).
 
 This fork is for showing a demo of the following cases:
-* [Create a virtual host on port 80, and make it the default](#virtual-host-on-port-80-host-by-default)
+* Create a virtual host on port 80, and make it the default
 * Create a proxy to redirect requests for https://domain.com to 10.10.10.10 and redirect requests for https://domain.com/resource2 to 20.20.20.20
 * Create a forward proxy to log HTTP requests going from the internal network to the Internet including: request protocol, remote IP and time take to serve the request
 * Implement a proxy health check
