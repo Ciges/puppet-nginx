@@ -232,5 +232,5 @@ The servers on 192.168.56.10 and 192.168.56.11 are both puppet nodes on my local
 
 The directive *ip_hash*, commented for testing the health check, allows to send the request from the same client to the same destination server, which allows the use of sessions, needed in most real scenarios.
 
-Once running we could see how the load balancer works reading the contents of the log */var/log/nginx/cigesnet_lb.access.log*.
+Once running we could see how the load balancer works reading the contents of the log */var/log/nginx/cigesnet_lb.access.log* in the puppet node.
 
