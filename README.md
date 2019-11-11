@@ -116,7 +116,7 @@ Here we will make the following:
 ```puppet
 class { 'nginx':
   log_format => {
-    proxy_log => '[$time_local] $remote_addr - "$request" $status - $request_time msec',
+    proxy_log => '[$time_local] $remote_addr - "$request" $status - $request_time sec',
   }
 }
 
