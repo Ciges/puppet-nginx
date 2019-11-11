@@ -47,7 +47,6 @@ In the next sections Manifest for the different configuration will be shown
 
 ### Virtual host on port 80, host by default
 
-*_.pp*
 ```puppet
 class { 'nginx': }
 
@@ -112,5 +111,44 @@ The manifest is in file [*examples/production/manifests/reverse_proxy_domaincom.
 ### Forward proxy to log HTTP requests going from the internal network to the Internet
 
 Here we will make the following:
-* Add a custom log format to the default configuration
-* Add the manifest for the new forward proxy
+* Add a custom log format to the default configuration (file *_.pp* shown before)
+
+```puppet
+class { 'nginx':
+  log_format => {
+    proxy_log => '[$time_local] $remote_addr - "$request" $status - $request_time msec',
+  }
+}
+
+nginx::resource::server { '_':
+    ensure => present, 
+    listen_port => 80,
+    listen_options => 'default_server',
+}
+```
+
+* Add the manifest for the new forward proxy that will run at port 8080
+
+```puppet
+nginx::resource::server { 'http_proxy':
+    ensure => present,
+    listen_port => 8080,
+    resolver => [ '213.60.205.175', '8.8.8.8' ],
+    proxy => 'http://$http_host$uri$is_args$args',
+    proxy_set_header => [
+        'Host $http_host',
+    ],
+    format_log => 'proxy_log',
+    access_log => '/var/log/nginx/http_proxy.access.log'
+}
+```
+
+In this case the manifest is available at [*examples/production/manifests/forward_proxy.pp*](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/forward_proxy.pp)
+
+To test it, we can tun the chrome navigator using the address of the agent node with the server deployed (*"debianvm.ciges.net*" in the example) as option with
+
+````bash
+google-chrome --proxy-server=debianvm.ciges.net:8080
+````
+
+And see the proxy running viewing the log at */var/log/nginx/http_proxy.access.log* on agent node
