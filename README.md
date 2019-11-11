@@ -12,6 +12,7 @@ This fork is for showing a demo of the following cases:
 All the manifest files used are under *[examples/production/](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/)* and *[examples/test/](https://github.com/Ciges/puppet-nginx/blob/master/examples/test/)* directories, for two proposed environnements: production and test.
 
 
+
 ## INSTALLING OR UPGRADING
 
 The instructions shown here apply to an installation in **agent-master architecture**, in which a master node controls configuration.
@@ -225,9 +226,11 @@ nginx::resource::server { 'cigesnet_lb':
 } 
 ```
 
+The manifest is available at [*examples/production/manifests/load_balancer_cigesnet.pp*](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/load_balancer_cigesnet.pp)
+
 The servers on 192.168.56.10 and 192.168.56.11 are both puppet nodes on my local network, the first one in *"production"* environment and the second one in *"test"* with instances configured to listen on 8090 port. The third IP address is from a VPS on Internet hosting www.ciges.net.
 
-The directive *ip_hash*, commented for testing the health check, allows to send the request from the same client to the same destination server, which allows the use of sessions, needed in a real scenario.
+The directive *ip_hash*, commented for testing the health check, allows to send the request from the same client to the same destination server, which allows the use of sessions, needed in most real scenarios.
 
 Once running we could see how the load balancer works reading the contents of the log */var/log/nginx/cigesnet_lb.access.log*.
 
