@@ -154,7 +154,7 @@ nginx::resource::server { 'http_proxy':
 
 In this case the manifest is available at [*examples/production/manifests/forward_proxy.pp*](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/forward_proxy.pp)
 
-To test it, we can tun the chrome navigator using the address of the agent node with the server deployed (*"debianvm.ciges.local*" in the example) as option with
+To test it, we can run the chrome navigator using the address of the agent node with the server deployed (*"debianvm.ciges.local*" in the example) as option with
 
 ````bash
 google-chrome --proxy-server=debianvm.ciges.local:8080
