@@ -120,7 +120,7 @@ The manifest is in file [*examples/production/manifests/reverse_proxy_domaincom.
 ### Forward proxy to log HTTP requests going from the internal network to the Internet
 
 Here we will make the following:
-* Add a custom log format to the default configuration file *[_.pp](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/_.pp)* shown before)
+* Add a custom log format to the default configuration file *[_.pp](https://github.com/Ciges/puppet-nginx/blob/master/examples/production/manifests/_.pp)* shown before
 
 ```puppet
 class { 'nginx':
